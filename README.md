@@ -1,2 +1,2 @@
 # DisGuard_Protocol
-DisGuard Protocol é um sistema de segurança projetado para proteger a comunicação e a troca de informações de moderação entre servidores no Discord. Com foco em garantir uma integração segura e eficiente, este protocolo facilita a conexão global entre servidores, assegurando que dados críticos sejam transmitidos de forma segura e confiável.
+DisGuard Protocol is a security system designed to protect communication and the exchange of moderation information between Discord servers. With a focus on ensuring secure and efficient integration, this protocol enables global server connections, ensuring that critical data is transmitted safely and reliably.
