@@ -1,0 +1,13 @@
+flask-compress
+Flask-Bcrypt
+Flask-Login
+Flask-Mail
+
+Flask 
+mysql-connector-python
+Flask-WTF 
+Flask-Session 
+python-dotenv 
+werkzeug
+requests
+validators
