@@ -49,11 +49,11 @@ def report():
     if not auth_header or not auth_header.startswith('Bearer '):
         return jsonify({'message': 'Token not provided or invalid'}), 401
 
-    token = auth_header.split(" ")[1]
+    token = auth_header.split(' ')[1]
     required_fields = ['staff_username', 'staff_id', 'banned_user', 'banned_user_id', 'reason', 'server_id', 'bot', 'proof']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
-        return abort(400, description=f"Missing required fields: {', '.join(missing_fields)}")
+        return abort(400, description=f'Missing required fields: {", ".join(missing_fields)}')
 
     server_id = data.get('server_id')
     if not token_validation(token, server_id):
@@ -63,7 +63,7 @@ def report():
 
     staff_username = data.get('staff_username')
     staff_id = data.get('staff_id')
-    status = "staff"
+    status = 'staff'
     validation = user_validation(staff_id, staff_username, status=status)
     if validation['status_code'] != 200:
         message = validation['message']
@@ -73,7 +73,7 @@ def report():
 
     banned_user = data.get('banned_user')
     banned_user_id = data.get('banned_user_id')
-    status = "user"
+    status = 'user'
     validation = user_validation(banned_user_id, banned_user, status=status)
     if validation['status_code'] != 200:
         message = validation['message']
