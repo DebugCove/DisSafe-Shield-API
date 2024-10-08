@@ -12,13 +12,17 @@ from dotenv import load_dotenv
 def load_database(retries=3, delay=5):
     logging.basicConfig(level=logging.DEBUG)
     load_dotenv()
+
     db_config = {
         'host': os.getenv('DB_HOST'),
         'user': os.getenv('DB_USER'),
         'password': os.getenv('DB_PASS'),
         'database': os.getenv('DB_DTB'),
+        'ssl_disabled': True, 
     }
+
     if not isinstance(db_config, dict):
+        logging.error('db_config must be a dictionary')
         raise ValueError('db_config must be a dictionary')
 
     for i in range(retries):
@@ -27,82 +31,98 @@ def load_database(retries=3, delay=5):
             return conn
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print('Something is wrong with the username or password.')
+                logging.error('Something is wrong with the username or password.')
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print('The database doesnt exist.')
+                logging.error('The database does not exist.')
             else:
-                print(err)
+                logging.error(f'Database error: {err}')
             if i < retries - 1:
-                print(f'Trying to reconnect in {delay} seconds...')
+                logging.info(f'Trying to reconnect in {delay} seconds...')
                 time.sleep(delay)
 
+    logging.error('Failed to connect to the database.')
     return None
 
 
 def user_validation(id, username, status, timeout=5):
+    logging.basicConfig(level=logging.DEBUG)
+    if not isinstance(id, int):
+        id = int(id)
+    if not isinstance(username, str):
+        username = str(username)
+
     load_dotenv()
     TOKEN = os.getenv('TOKEN')
+    if not TOKEN:
+        logging.error('Token not found in .env file.')
+        return {'status_code': 500, 'message': 'Internal Server Error'}
     url = f'https://discord.com/api/v10/users/{id}'
-    headers = {'Authorization': f'Bot {TOKEN}', 'Content-Type': 'application/json'}
+    headers = {'Authorization': f'Bot {TOKEN}'}
 
     try:
         response = requests.get(url, headers=headers, timeout=timeout)
         response.raise_for_status()
-    except requests.exceptions.Timeout:
-        return {'status_code': 599, 'menssage': 'Request timed out.'}
-    except requests.exceptions.HTTPError as e:
-        if response.status_code == 404:
-            return {'status_code': 404, 'menssage': 'User ID not found.'}
-        else:
-            print(f'Error in verification: {e}')
-            return {
-                'status_code': response.status_code,
-                'menssage': 'Error in request.',
-            }
+        user_data = response.json()
+        actual_username = user_data['username']
     except requests.exceptions.RequestException as e:
-        print(f'Error in verification: {e}')
-        return {'status_code': 500, 'menssage': 'Internal Error Server'}
-
-    user_data = response.json()
-    actual_username = user_data['username']
+        if isinstance(e, requests.exceptions.HTTPError):
+            if e.response.status_code == 404:
+                logging.error('User ID not found.')
+                return {'status_code': 404, 'message': 'User ID not found.'}
+            else:
+                logging.error(f'Error in verification: {e}')
+                return {
+                    'status_code': e.response.status_code,
+                    'message': 'Error in request.',
+                }
+        else:
+            logging.error(f'Error in verification: {e}')
+            return {'status_code': 500, 'message': 'Internal Server Error'}
 
     if actual_username == username and status == 'staff':
-        return {'status_code': 200, 'menssage': 'Staff username and ID match.'}
+        logging.info('Staff username and ID match.')
+        return {'status_code': 200, 'message': 'Staff username and ID match.'}
     elif actual_username == username and status == 'user':
-        return {'status_code': 200, 'menssage': 'Offender username and ID match.'}
+        logging.info('User username and ID match.')
+        return {'status_code': 200, 'message': 'User username and ID match.'}
     elif actual_username != username and status == 'staff':
-        return {'status_code': 400, 'menssage': 'Staff username and ID dont match.'}
-    elif actual_username != username and status == 'user':
-        return {
-            'status_code': 400,
-            'menssage': 'Offender username and ID do not match.',
-        }
+        logging.error('Staff username and ID do not match.')
+        return {'status_code': 400, 'message': 'Staff username and ID do not match.'}
+    else:
+        logging.error('User username and ID do not match.')
+        return {'status_code': 400, 'message': 'User username and ID do not match.'}
 
 
 def url_validation(proof, timeout=5):
+    logging.basicConfig(level=logging.DEBUG)
     success = []
     success_but = []
     fails = []
     invalid = []
 
-    if not isinstance(proof, list):
+    if isinstance(proof, str):
         proof = proof.split(', ')
 
-    for proofs in proof:
-        if not validators.url(proofs):
-            invalid.append(proofs)
+    for url in proof:
+        if not validators.url(url):
+            logging.error(f'Invalid URL: {url}')
+            invalid.append(url)
             continue
 
         try:
-            response = requests.get(proofs, timeout=timeout)
+            response = requests.get(url, timeout=timeout)
             if response.status_code == 200:
-                success.append(proofs)
+                logging.info(f'URL {url} is valid.')
+                success.append(url)
             else:
-                success_but.append(proofs)
+                logging.warning(f'URL {url} is not valid. Status code: {response.status_code}')
+                success_but.append(url)
         except requests.exceptions.Timeout:
-            fails.append(f'URL {proofs} cannot be reached -> Timeout')
+            logging.error(f'URL {url} cannot be reached -> Timeout')
+            fails.append(f'URL {url} cannot be reached -> Timeout')
         except requests.exceptions.RequestException as e:
-            fails.append(f'The URL {proofs} cannot be reached -> ERROR: {e}')
+            logging.error(f'URL {url} cannot be reached -> ERROR: {e}')
+            fails.append(f'The URL {url} cannot be reached -> ERROR: {e}')
 
     return {
         'success': success,
@@ -113,44 +133,59 @@ def url_validation(proof, timeout=5):
 
 
 def unique_report_id_generator(retries=3, delay=5):
+    logging.basicConfig(level=logging.DEBUG)
     db = load_database(retries, delay)
-    cursor = db.cursor()
-    cursor.execute('SELECT id FROM report')
-    ids = cursor.fetchall()
-    new_id = randint(1111111111111111, 9999999999999999)
-    if new_id not in [row[0] for row in ids]:
-        return new_id
-
-
-def token_validation(token, server_id):
-    db = load_database()
-    cursor = db.cursor()
-
-    query = '''
-    SELECT token FROM tokens WHERE token = %s AND server_id = %s
-    '''
-
-    cursor.execute(query, (token, server_id))
-    result = cursor.fetchone()
-
-    if result:
-        return True
+    if db:
+        logging.info('Database connection successful.')
+        try:
+            cursor = db.cursor()
+            query = 'SELECT id FROM Report'
+            cursor.execute(query)
+            ids = cursor.fetchall()
+            new_id = randint(1111111111111111, 9999999999999999)
+            logging.info(f'Generated new ID: {new_id}')
+            while new_id in [row[0] for row in ids]:
+                logging.warning(f'New ID {new_id} already exists. Generating new one...')
+                new_id = randint(1111111111111111, 9999999999999999)
+            logging.info(f'New ID generated: {new_id}')
+            return new_id
+        finally:
+            logging.info('Closing database connection...')
+            cursor.close()
+            db.close()
     else:
-        return False
+        logging.error('Database connection failed.')
+        db.close()
+        return None
 
 
-def check_duplicates(banned_user_id, server_id):
-    db = load_database()
-    cursor = db.cursor()
-
-    query = '''
-    SELECT banned_user_id FROM report WHERE banned_user_id = %s AND server_id = %s
-    '''
-
-    cursor.execute(query, (banned_user_id, server_id))
-    result = cursor.fetchone()
-
-    if result:
-        return True
+def token_validation(token, user_id, retries=3, delay=5):
+    db = load_database(retries, delay)
+    if db:
+        try:
+            cursor = db.cursor()
+            query = 'SELECT COUNT(*) FROM Tokens WHERE token = %s AND user_id = %s'
+            cursor.execute(query, (token, user_id))
+            return bool(cursor.fetchone()[0])
+        finally:
+            cursor.close()
+            db.close()
     else:
-        return False
+        db.close()
+        return None
+
+
+def check_duplicates(offender_id, server_id, retries=3, delay=5):
+    db = load_database(retries, delay)
+    if db:
+        try:
+            cursor = db.cursor()
+            query = 'SELECT EXISTS (SELECT 1 FROM Report WHERE offender_id = %s AND server_id = %s)'
+            cursor.execute(query, (offender_id, server_id))
+            return cursor.fetchone()[0]
+        finally:
+            cursor.close()
+            db.close()
+    else:
+        db.close()
+        return None
