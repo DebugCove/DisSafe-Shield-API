@@ -164,8 +164,5 @@ cython_debug/
 !requirements.txt
 *.txt
 *.sql
-*.sh
 test/extras/
-bandit_report.json
-bandit.yaml
 test/update_venv.py
