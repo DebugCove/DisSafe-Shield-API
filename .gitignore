@@ -166,3 +166,4 @@ cython_debug/
 *.sql
 test/extras/
 test/update_venv.py
+ca.pem
