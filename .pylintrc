@@ -436,10 +436,12 @@ disable=raw-checker-failed,
         use-implicit-booleaness-not-comparison-to-string,
         use-implicit-booleaness-not-comparison-to-zero,
         use-symbolic-message-instead,
-        C0301,
-        C0114,
         C0103,
-        E0015
+        C0114,
+        C0301,
+        C0411,
+        E0015,
+        W1203
 
 
 # Enable the message, report, category or checker with the given id(s). You can
