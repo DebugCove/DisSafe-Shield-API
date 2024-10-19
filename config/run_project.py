@@ -19,13 +19,13 @@ def run_project(app):
 
     if status == 'development':
         PORT = getenv('DEVELOPMENT')
+        DEBUG = True
     elif status == 'production':
         PORT = getenv('PRODUCTION')
+        DEBUG = False
     else:
         raise ValueError('Status not found in config.json')
-    DEBUG = getenv('FLASK_DEBUG')
     HOST= getenv('FLASK_HOST')
-    if not PORT or not DEBUG or not HOST:
-        raise ValueError('Port, host or debug value not set in .env')
+
 
     app.run(host=HOST, debug=DEBUG, port=PORT)
