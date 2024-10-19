@@ -1,10 +1,10 @@
 import os
 from datetime import datetime, timedelta
 import mysql.connector
-from dotenv import load_dotenv
 from flask import Flask, request, jsonify, redirect, abort
 from flask_talisman import Talisman
 from extras.config import load_database, user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
+from config.run_project import run_project
 
 
 app = Flask(__name__)
@@ -13,10 +13,10 @@ app.secret_key = os.urandom(24)
 
 Talisman(
     app,
-    frame_options='DENY', 
+    frame_options='DENY',
     x_xss_protection=True,
     strict_transport_security=True,
-    strict_transport_security_max_age=31536000  
+    strict_transport_security_max_age=31536000
 )
 
 
@@ -26,7 +26,7 @@ def index():
     if params:
         return jsonify({'message': 'This route does not accept parameters'}), 400
     else:
-        return redirect('api'), 308
+        return redirect('api/v1'), 308
 
 
 @app.route('/api/v1', methods=['GET'])
@@ -175,13 +175,9 @@ def not_found(error):
 
 @app.errorhandler(500)
 def internal_server_error(error):
-    print(error)
     return jsonify({'message': 'Internal server error'}), 500
 
 
 
 if __name__ == '__main__':
-    load_dotenv()
-    PORT = os.getenv('FLASK_PORT')
-    DEBUG = os.getenv('FLASK_DEBUG')
-    app.run(host='0.0.0.0', debug=DEBUG, port=PORT)
+    run_project(app)
