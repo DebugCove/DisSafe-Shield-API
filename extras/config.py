@@ -1,12 +1,15 @@
-import os
-import time
 import logging
 import requests
 import validators
-from random import randint
 import mysql.connector
+from dotenv import load_dotenv
+from os import getenv
+from random import randint
 
-def user_validation(id, username, status, timeout=5):
+from config.database import load_database
+
+
+def user_validation(id, username, status):
     logging.basicConfig(level=logging.DEBUG)
     if not isinstance(id, int):
         id = int(id)
@@ -14,7 +17,7 @@ def user_validation(id, username, status, timeout=5):
         username = str(username)
 
     load_dotenv()
-    TOKEN = os.getenv('TOKEN')
+    TOKEN = getenv('TOKEN')
     if not TOKEN:
         logging.error('Token not found in .env file.')
         return {'status_code': 500, 'message': 'Internal Server Error'}
@@ -22,7 +25,7 @@ def user_validation(id, username, status, timeout=5):
     headers = {'Authorization': f'Bot {TOKEN}'}
 
     try:
-        response = requests.get(url, headers=headers, timeout=timeout)
+        response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
         user_data = response.json()
         actual_username = user_data['username']
@@ -55,7 +58,7 @@ def user_validation(id, username, status, timeout=5):
         return {'status_code': 400, 'message': 'User username and ID do not match.'}
 
 
-def url_validation(proof, timeout=5):
+def url_validation(proof):
     logging.basicConfig(level=logging.DEBUG)
     success = []
     success_but = []
@@ -72,7 +75,7 @@ def url_validation(proof, timeout=5):
             continue
 
         try:
-            response = requests.get(url, timeout=timeout)
+            response = requests.get(url, timeout=5)
             if response.status_code == 200:
                 logging.info(f'URL {url} is valid.')
                 success.append(url)
@@ -94,9 +97,9 @@ def url_validation(proof, timeout=5):
     }
 
 
-def unique_report_id_generator(retries=3, delay=5):
+def unique_report_id_generator():
     logging.basicConfig(level=logging.DEBUG)
-    db = load_database(retries, delay)
+    db = load_database()
     if db:
         logging.info('Database connection successful.')
         try:
@@ -121,8 +124,8 @@ def unique_report_id_generator(retries=3, delay=5):
         return None
 
 
-def token_validation(token, user_id, retries=3, delay=5):
-    db = load_database(retries, delay)
+def token_validation(token, user_id):
+    db = load_database()
     if db:
         try:
             cursor = db.cursor()
@@ -137,8 +140,8 @@ def token_validation(token, user_id, retries=3, delay=5):
         return None
 
 
-def check_duplicates(offender_id, server_id, retries=3, delay=5):
-    db = load_database(retries, delay)
+def check_duplicates(offender_id, server_id):
+    db = load_database()
     if db:
         try:
             cursor = db.cursor()
