@@ -6,7 +6,6 @@ import mysql.connector
 from mysql.connector import errorcode
 
 
-
 def load_database(retries=3, delay=5):
     logging.basicConfig(level=logging.DEBUG)
     load_dotenv()
