@@ -27,5 +27,4 @@ def run_project(app):
         raise ValueError('Status not found in config.json')
     HOST= getenv('FLASK_HOST')
 
-
     app.run(host=HOST, debug=DEBUG, port=PORT)
