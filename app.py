@@ -1,9 +1,11 @@
-import os
 import logging
-from datetime import datetime
 import mysql.connector
+from os import urandom
+from datetime import datetime
 from flask import Flask, request, jsonify, abort
 from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from extras.config import user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
 from config.database import load_database
@@ -13,8 +15,7 @@ from middleware.compression import compression
 
 app = Flask(__name__)
 compression(app)
-app.secret_key = os.urandom(24)
-
+app.secret_key = urandom(24)
 
 Talisman(
     app,
@@ -22,6 +23,13 @@ Talisman(
     x_xss_protection=True,
     strict_transport_security=True,
     strict_transport_security_max_age=31536000
+)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=['500 per day'],
+    storage_uri="redis://localhost:6379"
 )
 
 
@@ -35,6 +43,7 @@ def api():
         return jsonify({'message': 'DisSafe Shield API'}), 200
 
 @app.route('/api/v1/report', methods=['POST'])
+@limiter.limit('5 per minute')
 def report():
     params = request.args
     if params:
@@ -165,6 +174,14 @@ def report():
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'message': 'Not found'}), 404
+
+@app.errorhandler(429)
+def rate_limit_error(error):
+    ip = request.remote_addr
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=logging.DEBUG)
+    logging.error(f'Rate limit exceeded: \nIP: {ip}\nTimestamp: {timestamp}')
+    return jsonify({'message': 'Rate limit exceeded'}), 429
 
 @app.errorhandler(500)
 def internal_server_error(error):
