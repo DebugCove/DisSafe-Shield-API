@@ -3,6 +3,7 @@ Flask
 flask-compress
 flask-talisman
 Flask-Limiter
+flask-cors
 werkzeug
 requests
 validators
