@@ -1,4 +1,5 @@
 import os
+import logging
 from datetime import datetime
 import mysql.connector
 from flask import Flask, request, jsonify, abort
@@ -49,7 +50,7 @@ def report():
     staff_username = data.get('staff_username')
     staff_id = data.get('staff_id')
     validation = user_validation(staff_id, staff_username, status='staff')
-    if validation['status_code'] != 200:
+    if validation['status_code'] not in range(200, 299):
         return jsonify({'message': validation['message']}), validation['status_code']
 
     auth_header = request.headers.get('Authorization')
@@ -167,6 +168,8 @@ def not_found(error):
 
 @app.errorhandler(500)
 def internal_server_error(error):
+    logging.basicConfig(level=logging.DEBUG)
+    logging.error(f'Unexpected API Error: {error}')
     return jsonify({'message': 'Internal server error'}), 500
 
 

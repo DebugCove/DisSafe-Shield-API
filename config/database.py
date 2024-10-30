@@ -16,7 +16,7 @@ def load_database(retries=3, delay=5):
         'password': getenv('DB_PASS'),
         'database': getenv('DB_DTB'),
         'port': getenv('DB_PORT'),
-        'ssl_ca': getenv('DB_SSL'),
+        #'ssl_ca': getenv('DB_SSL'),
     }
 
     if not isinstance(db_config, dict):
