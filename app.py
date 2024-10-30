@@ -3,7 +3,9 @@ from datetime import datetime
 import mysql.connector
 from flask import Flask, request, jsonify, abort
 from flask_talisman import Talisman
-from extras.config import load_database, user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
+
+from extras.config import user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
+from config.database import load_database
 from config.run_project import run_project
 from middleware.compression import compression
 
