@@ -158,10 +158,6 @@ def report():
         return jsonify({
             'message': 'Report submitted successfully, but some URLs were invalid',
             'id': report_id,
-            'success': url_success,
-            'success_but': url_success_but,
-            'fails': url_fails,
-            'invalid': url_invalid
         }), 422
 
 
