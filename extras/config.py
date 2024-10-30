@@ -5,45 +5,6 @@ import requests
 import validators
 from random import randint
 import mysql.connector
-from mysql.connector import errorcode
-from dotenv import load_dotenv
-
-
-def load_database(retries=3, delay=5):
-    logging.basicConfig(level=logging.DEBUG)
-    load_dotenv()
-
-    db_config = {
-        'host': os.getenv('DB_HOST'),
-        'user': os.getenv('DB_USER'),
-        'password': os.getenv('DB_PASS'),
-        'database': os.getenv('DB_DTB'),
-        'port': os.getenv('DB_PORT'),
-        'ssl_ca': os.getenv('DB_SSL'),
-    }
-
-    if not isinstance(db_config, dict):
-        logging.error('db_config must be a dictionary')
-        raise ValueError('db_config must be a dictionary')
-
-    for i in range(retries):
-        try:
-            conn = mysql.connector.connect(**db_config)
-            return conn
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                logging.error('Something is wrong with the username or password.')
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                logging.error('The database does not exist.')
-            else:
-                logging.error(f'Database error: {err}')
-            if i < retries - 1:
-                logging.info(f'Trying to reconnect in {delay} seconds...')
-                time.sleep(delay)
-
-    logging.error('Failed to connect to the database.')
-    return None
-
 
 def user_validation(id, username, status, timeout=5):
     logging.basicConfig(level=logging.DEBUG)
