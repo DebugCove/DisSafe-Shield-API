@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, abort
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_cors import CORS
 
 from extras.config import user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
 from config.database import load_database
@@ -15,6 +16,7 @@ from middleware.compression import compression
 
 app = Flask(__name__)
 compression(app)
+CORS(app)
 app.secret_key = urandom(24)
 
 Talisman(
