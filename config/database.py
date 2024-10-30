@@ -19,7 +19,7 @@ def load_database(retries=3, delay=5):
         'ssl_ca': getenv('DB_SSL'),
     }
 
-    if not instance(db_config, dict):
+    if not isinstance(db_config, dict):
         logging.error('db_config must be a dictionary')
         exit()
 
