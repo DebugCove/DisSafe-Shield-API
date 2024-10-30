@@ -1,13 +1,15 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import mysql.connector
-from flask import Flask, request, jsonify, redirect, abort
+from flask import Flask, request, jsonify, abort
 from flask_talisman import Talisman
 from extras.config import load_database, user_validation, url_validation, unique_report_id_generator, token_validation, check_duplicates
 from config.run_project import run_project
+from middleware.compression import compression
 
 
 app = Flask(__name__)
+compression(app)
 app.secret_key = os.urandom(24)
 
 
@@ -21,14 +23,6 @@ Talisman(
 
 
 @app.route('/', methods=['GET'])
-def index():
-    params = request.args
-    if params:
-        return jsonify({'message': 'This route does not accept parameters'}), 400
-    else:
-        return redirect('api/v1'), 308
-
-
 @app.route('/api/v1', methods=['GET'])
 def api():
     params = request.args
