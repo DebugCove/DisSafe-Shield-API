@@ -60,6 +60,12 @@ def user_validation(id, username, status):
 
 def url_validation(proof):
     logging.basicConfig(level=logging.DEBUG)
+    allowed_domains =  [
+        'imgur.com', 'flickr.com', 'photos.google.com', 'dropbox.com', 
+        'pinterest.com', '500px.com', 'imageshack.com', 'photobucket.com', 
+        'unsplash.com', 'onedrive.live.com', 'drive.google.com', 
+        'icloud.com', 'mega.nz'
+    ]
     success = []
     success_but = []
     fails = []
@@ -70,6 +76,10 @@ def url_validation(proof):
 
     for url in proof:
         if not validators.url(url):
+            logging.error(f'Invalid URL: {url}')
+            invalid.append(url)
+            continue
+        if not any(domain in url for domain in allowed_domains):
             logging.error(f'Invalid URL: {url}')
             invalid.append(url)
             continue
