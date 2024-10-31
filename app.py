@@ -31,7 +31,7 @@ limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=['500 per day'],
-    storage_uri="redis://localhost:6379"
+    storage_uri='redis://localhost:6379'
 )
 
 
@@ -118,6 +118,9 @@ def report():
     url_success_but = url_valid['success_but']
     url_fails = url_valid['fails']
     url_invalid = url_valid['invalid']
+
+    if not url_success:
+        return jsonify({'message': 'No valid urls'}), 400
 
     if accuser_id == offender_id or offender_id == staff_id:
         return jsonify({'message': 'You cannot report yourself'}), 400
