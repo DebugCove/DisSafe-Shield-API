@@ -197,7 +197,7 @@ def all_reports():
         for row in resultado:
             for key, value in row.items():
                 if isinstance(value, timedelta):
-                    row[key] = str(value) 
+                    row[key] = str(value)
 
         return jsonify(resultado)
     except mysql.connector.Error as err:
@@ -206,8 +206,6 @@ def all_reports():
     finally:
         cursor.close()
         conn.close()
-
-
 
 @app.errorhandler(404)
 def not_found(error):
