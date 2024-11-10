@@ -64,7 +64,7 @@ def url_validation(proof):
         'imgur.com', 'flickr.com', 'photos.google.com', 'dropbox.com', 
         'pinterest.com', '500px.com', 'imageshack.com', 'photobucket.com', 
         'unsplash.com', 'onedrive.live.com', 'drive.google.com', 
-        'icloud.com', 'mega.nz'
+        'icloud.com', 'mega.nz', '1drv.ms'
     ]
     success = []
     success_but = []
