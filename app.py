@@ -1,7 +1,7 @@
 import logging
 import mysql.connector
-from os import urandom
-from datetime import datetime
+from os import urandom 
+from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, abort
 from flask_talisman import Talisman
 from flask_limiter import Limiter
@@ -174,6 +174,39 @@ def report():
             'message': 'Report submitted successfully, but some URLs were invalid',
             'id': report_id,
         }), 422
+
+@app.route('/api/v1/reports', methods=['GET'])
+def all_reports():
+    params = request.args
+    if params:
+        return jsonify({'message': 'This route does not accept parameters'}), 400
+
+    conn = load_database()
+    if not conn:
+        abort(500, description='Failed to connect to the database')
+
+    cursor = conn.cursor(dictionary=True)
+
+    query = '''
+    SELECT * FROM Report LIMIT 30
+    '''
+    try:
+        cursor.execute(query)
+        resultado = cursor.fetchall()
+
+        for row in resultado:
+            for key, value in row.items():
+                if isinstance(value, timedelta):
+                    row[key] = str(value) 
+
+        return jsonify(resultado)
+    except mysql.connector.Error as err:
+        conn.rollback()
+        abort(500, description=f'Failed to retrieve reports: {err}')
+    finally:
+        cursor.close()
+        conn.close()
+
 
 
 @app.errorhandler(404)
