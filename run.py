@@ -5,7 +5,7 @@ from app.app import create_app
 load_dotenv()
 config = getenv('FLASK_ENV') or 'development'
 
-app = create_app(config)
+app = create_app()
 
 if __name__ == "__main__":
     HOST = getenv('HOST')
