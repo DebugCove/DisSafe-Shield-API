@@ -10,3 +10,5 @@ validators
 mysql-connector-python
 python-dotenv 
 redis
+flasgger
+gunicorn
