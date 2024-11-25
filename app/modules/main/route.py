@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ...extras.user_validation import user_validation
 from ...extras.token_validation import token_validation
+from ...extras.proof_validation import proof_validation
 
 
 main_bp = Blueprint('main', __name__)
@@ -34,4 +35,9 @@ def make_report():
     if result_data_validation['error']:
         return jsonify({'message': result_data_validation['message']}), result_data_validation['status_code']
 
-    return jsonify({'message': 'Report sent successfully'}), 200
+    result_proof_validation = proof_validation(data)
+    error_proof_validation = result_proof_validation['error']
+    if error_proof_validation:
+        return jsonify({'message': 'Report was completed successfully, but some links were not included.'}), 200
+    else:
+        return jsonify({'message': 'Report sent successfully.'}), 200
