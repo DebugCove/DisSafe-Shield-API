@@ -442,6 +442,7 @@ disable=raw-checker-failed,
         C0301,
         C0411,
         E0015,
+        W0612,
         W1203
 
 
