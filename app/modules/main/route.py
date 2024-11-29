@@ -3,6 +3,7 @@ from ...extras.user_validation import user_validation
 from ...extras.token_validation import token_validation
 from ...extras.proof_validation import proof_validation
 from ...extras.id_report_generator import report_id_generator
+from ...extras.check_duplicates import check_duplicates
 
 
 main_bp = Blueprint('main', __name__)
@@ -26,6 +27,10 @@ def make_report():
     result_token_validation = token_validation(data, auth_header)
     if result_token_validation['error']:
         return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
+
+    result_check_duplicates = check_duplicates(data)
+    if result_check_duplicates['error']:
+        return jsonify({'message': result_check_duplicates['message']}), result_check_duplicates['status_code']
 
     result_data_validation = user_validation(data, status='staff')
     if result_data_validation['error']:
