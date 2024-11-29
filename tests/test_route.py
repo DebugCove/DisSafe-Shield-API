@@ -35,7 +35,7 @@ def createTokenRow(db, authTokenValue):
 
 
 @pytest.fixture
-def succesData():
+def succesReportData():
     return {
         "id": "",
         "accuser_id": "",
@@ -50,20 +50,62 @@ def succesData():
         "proof": "http://imgur.com, http://flickr.com",
     }
 
-def test_succes_report(self, client:FlaskClient, succesData, createTokenRow):
-    logging.info("Report route test started")
+def test_succes_report(client:FlaskClient, succesReportData, createTokenRow):
+    logging.info("Succes report route test started")
 
     if createTokenRow:
-        logging.info("Starting request")
         response = client.post("/report",
                                     
-            data = succesData,
+            data = succesReportData,
             headers = {
-                "Authorization": f"Bearer {authTokenValue}"
+                "Authorization": f"Bearer {createTokenRow}"
             }
         )
-
+        res = json.loads(response.data.decode('utf-8')).get("message")
         assert response.status_code == 200
+        assert res == 'Report sent successfully.'
     else:
         logging.error("Test Failed. Reason: hasn't token.")
+
+
+def test_report_missing_data(client:FlaskClient):
+    logging.info("Report route test missing data started")
+
+    response = client.post("/report")
+
+    res = json.loads(response.data.decode('utf-8')).get("message")
+    assert response.status_code == 400
+    assert res == 'Data not defined'
+
+
+def test_report_missing_auth_header(client:FlaskClient, succesReportData)
+    logging.info("Report route test missing auth header started")
+
+    response = client.post("/report",
+            data = succesReportData
+    )
+
+    res = json.loads(response.data.decode('utf-8')).get("message")
+    assert response.status_code == 401
+    assert res == 'Token not provided or invalid'
+
+
+def test_report_missing_offender_id(client:FlaskClient, succesReportData, createTokenRow)
+
+    succesReportData.pop("accuser_id")
+
+    if createTokenRow:
+        response = client.post("/report",
+                                    
+            data = succesReportData,
+            headers = {
+                "Authorization": f"Bearer {createTokenRow}"
+            }
+        )
+        res = json.loads(response.data.decode('utf-8')).get("message")
+        assert response.status_code == 400
+        assert res == 'offender_id or server_id were not provided.'
+    else:
+        logging.error("Test Failed. Reason: hasn't token.")
+    
 
