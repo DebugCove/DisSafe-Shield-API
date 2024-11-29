@@ -32,34 +32,38 @@ def createTokenRow(db, authTokenValue):
     else:
         logging.error("Hasn't a  test database")
         return None
-    
+
 
 @pytest.fixture
-def requestData():
+def succesData():
     return {
-        "proof": "http://imgur.com, http://flickr.com",
+        "id": "",
         "accuser_id": "",
         "accuser_username": "",
         "staff_id": "",
-        "staff_username": ""
+        "staff_username": "",
+        "reason": "",
+        "report_date":"",
+        "report_time":"",
+        "server_id":"",
+        "bot":"",
+        "proof": "http://imgur.com, http://flickr.com",
     }
 
-class TestReport:
+def test_succes_report(self, client:FlaskClient, succesData, createTokenRow):
+    logging.info("Report route test started")
 
-    def test_route(self, client:FlaskClient, requestData, createTokenRow):
-        logging.info("Report route test started")
-
-        if createTokenRow:
-            logging.info("Starting request")
-            response = client.post("/report",
+    if createTokenRow:
+        logging.info("Starting request")
+        response = client.post("/report",
                                     
-                data = requestData,
-                headers = {
-                    "Authorization": f"Bearer {authTokenValue}"
-                }
-            )
+            data = succesData,
+            headers = {
+                "Authorization": f"Bearer {authTokenValue}"
+            }
+        )
 
-            assert response.status_code == 200
-        else:
-            logging.error("Test Failed. Reason: hasn't token.")
+        assert response.status_code == 200
+    else:
+        logging.error("Test Failed. Reason: hasn't token.")
 
