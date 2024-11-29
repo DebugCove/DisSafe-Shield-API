@@ -45,4 +45,6 @@ def db(configureLog):
     data_base = connect_database()
     data_base.autocommit = False
 
-    return data_base
+    yield data_base
+
+    data_base.rollback()

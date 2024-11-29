@@ -24,9 +24,8 @@ def createTokenRow(db, authTokenValue):
 
             logging.info("Token created")
 
-            yield authTokenValue
+            return authTokenValue
 
-            db.rollback()
         except mysql.connector.Error as err:
             logging.error(f"Token not created. Error: {err.msg}")
             return None
