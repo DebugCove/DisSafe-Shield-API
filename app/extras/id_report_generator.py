@@ -45,14 +45,6 @@ def report_id_generator():
         logging.info('Executed the query in the database')
         ids = cursor.fetchall()
 
-        if ids is None:
-            logging.error('Failed to fetch IDs from the database')
-            return {
-                'error': True,
-                'message': 'Internal Server Error',
-                'status_code': 500
-            }
-
         new_id = str(uuid.uuid4()).replace('-', '')
         formatted_new_id = new_id[:10]
         while formatted_new_id in [row[0] for row in ids]:
