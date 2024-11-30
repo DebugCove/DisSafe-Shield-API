@@ -3,10 +3,14 @@ import sys
 import os
 import logging
 from flask import Flask
+from flask.testing import FlaskClient, EnvironBuilder
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.app import create_app
 from app.db.db import connect_database
+
+#def doResquest(client:FlaskClient, method:str, url:str, json:dict, data:dict):
+
 
 
 @pytest.fixture
@@ -48,3 +52,4 @@ def db(configureLog):
     yield data_base
 
     data_base.rollback()
+    data_base.close()
