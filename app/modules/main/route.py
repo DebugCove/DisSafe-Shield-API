@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
-from ...extras.user_validation import user_validation
-from ...extras.token_validation import token_validation
-from ...extras.proof_validation import proof_validation
-from ...extras.id_report_generator import report_id_generator
-from ...extras.check_duplicates import check_duplicates
+from ...extras.report.user_validation import user_validation
+from ...extras.report.token_validation import token_validation
+from ...extras.report.proof_validation import proof_validation
+from ...extras.report.id_report_generator import report_id_generator
+from ...extras.report.check_duplicates import check_duplicates
 
 
 main_bp = Blueprint('main', __name__)
@@ -43,8 +43,13 @@ def make_report():
 
     result_proof_validation = proof_validation(data)
     error_proof_validation = result_proof_validation['error']
+    data_result_proof_validation = result_proof_validation['data'][0]['success']
+    data['proof'] = data_result_proof_validation
 
     result_id_generator = report_id_generator()
+    if result_id_generator['error']:
+        return jsonify({'message': result_id_generator['message']}), result_id_generator['status_code']
+    data['id'] = result_id_generator
 
 
     if error_proof_validation:
