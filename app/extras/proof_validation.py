@@ -57,6 +57,12 @@ def proof_validation(data):
             fails.append(url)
 
     if fails or invalid or not_allowed_domains or success_but:
+        if not success:
+            return {
+                'error': True,
+                'message': 'The report could not be made because there are no valid urls',
+                'status_code': 400
+            }
         return {
             'error': True,
             'message': 'All the URLs have been checked, but there are some URLs that are invalid, have problems, or are not allowed.',
