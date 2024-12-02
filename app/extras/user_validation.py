@@ -18,12 +18,20 @@ def user_validation(data, status):
 
     if status == "staff":
         logging.info('Checking the staff member')
-        id = data['staff_id']
-        username = data['staff_username']
+        id = data.get('staff_id')
+        username = data.get('staff_username')
     else:
         logging.info('Checking the member')
-        id = data['accuser_id']
-        username = data['accuser_username']
+        id = data.get('accuser_id')
+        username = data.get('accuser_username')
+
+    if not id or not username:
+        logging.error('ID or username is not defined')
+        return {
+            'error': True,
+            'message': 'Id or username not found',
+            'status_code': 400
+        }
 
     TOKEN = getenv('TOKEN')
     if not TOKEN:
@@ -34,22 +42,6 @@ def user_validation(data, status):
             'status_code': 500
         }
 
-    if not id:
-        logging.error('ID is noot defined')
-        return {
-            'error': True,
-            'message': 'Id is not found',
-            'status_code': 400
-        }
-    if not username:
-        logging.error('Username is not defined')
-        return {
-            'error': True,
-            'message': 'Username not found',
-            'status_code': 400
-        }
-
-
     url = f'https://discord.com/api/v10/users/{id}'
     headers = {'Authorization': f'Bot {TOKEN}'}
 
@@ -58,31 +50,30 @@ def user_validation(data, status):
         logging.info('Requesting the discord API')
         response.raise_for_status()
         user_data = response.json()
-        current_user = user_data['username']
+        current_user = user_data.get('username')
         logging.info('Receiving data from the API')
-    except requests.exceptions.RequestException as e:
-        if isinstance(e, requests.exceptions.HTTPError):
-            if e.response.status_code == 404:
-                logging.error('User not found')
-                return {
-                    'error': True,
-                    'message': 'User not found',
-                    'status_code': 404
-                }
-            else:
-                logging.error('Error in request %s', e)
-                return {
-                    'error': True,
-                    'message': 'Error',
-                    'status_code': e.response.status_code
-                }
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            logging.error('User not found')
+            return {
+                'error': True,
+                'message': 'User not found',
+                'status_code': 404
+            }
         else:
             logging.error('Error in request %s', e)
             return {
                 'error': True,
-                'message': 'Error in request',
-                'status_code': 400
+                'message': 'Error',
+                'status_code': e.response.status_code
             }
+    except requests.exceptions.RequestException as e:
+        logging.error('Error in request %s', e)
+        return {
+            'error': True,
+            'message': 'Error in request',
+            'status_code': 400
+        }
 
     if current_user == username and status == 'staff':
         logging.info('Staff username: %s and ID match %s', current_user, id)
