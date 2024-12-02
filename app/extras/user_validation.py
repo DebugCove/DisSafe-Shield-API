@@ -30,7 +30,7 @@ def user_validation(data, status):
         logging.error('Token is not defined')
         return {
             'error': True,
-            'message': 'Token is not defined',
+            'message': 'Internal Server Error',
             'status_code': 500
         }
 
@@ -73,7 +73,7 @@ def user_validation(data, status):
                 logging.error('Error in request %s', e)
                 return {
                     'error': True,
-                    'message': f'Error in request {e}',
+                    'message': 'Error',
                     'status_code': e.response.status_code
                 }
         else:
