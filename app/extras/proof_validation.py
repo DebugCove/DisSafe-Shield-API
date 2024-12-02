@@ -21,7 +21,7 @@ def proof_validation(data):
     not_allowed_domains = []
 
     proof = data.get('proof')
-    if not proof:
+    if proof is None:
         return {
             'error': True,
             'message': 'Proof is not defined',
@@ -34,7 +34,7 @@ def proof_validation(data):
     for url in proof:
         logging.info('Check the URL: %s', url)
 
-        if not validators.url(url):
+        if not isinstance(url, str) or not validators.url(url):
             logging.error('Invalid URL: %s', url)
             invalid.append(url)
             continue
