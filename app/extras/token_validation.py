@@ -11,8 +11,6 @@ def token_validation(data, auth_header):
     logging.basicConfig(level=logging.DEBUG)
     logging.info('\n\nToken Validation\n')
     load_dotenv()
-    db = connect_database()
-    logging.info('Trying to acess the databse')
     if not data:
         logging.error('Data is not defined')
         return {
@@ -20,11 +18,13 @@ def token_validation(data, auth_header):
             'message': 'Data not defined',
             'status_code': 400
         }
+
+    db = connect_database()
     if not db:
         logging.error('Error trying to acess the databse')
         return {
             'error': True,
-            'message': 'Error trying to acess the databse',
+            'message': 'Internal Server Error',
             'status_code': 500
         }
 
@@ -36,7 +36,7 @@ def token_validation(data, auth_header):
             cursor.execute(query, (token,))
             logging.info('Execute the query in the database')
             result = cursor.fetchone()
-            if not result:
+            if result is None:
                 logging.error('The token entered was not found in the database')
                 return {
                     'error': True,
