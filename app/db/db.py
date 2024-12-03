@@ -49,7 +49,7 @@ def connect_database():
         g.db = generate_connection()
     return g.db if isinstance(g.db, PooledMySQLConnection | MySQLConnectionAbstract) else None
 
-It's a code recommendation. I believe this change will enable the database in tests. 
+It's a code recommendation. I believe this change will maybe enable the database in tests. 
 Moreover, the use of the g object from Flask for the database is shown in examples 
 in the Flask documentation.
 """
