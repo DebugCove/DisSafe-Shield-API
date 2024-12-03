@@ -18,33 +18,31 @@ def url_prefix():
 @pytest.fixture
 def createTokenRow(db, authTokenValue):
 
-    if db:
-        logging.info("Has a test database")
-        try:
-            token = authTokenValue
-            cursor = db.cursor()
-            query = "INSERT INTO Tokens (token) VALUES (%s)"
-            cursor.execute(query, (token,))
+    result = None
 
-            nquery = 'SELECT * FROM Tokens WHERE token = %s'
-            cursor.execute(nquery, (token,))
-            result = cursor.fetchone()
+    logging.info("Has a test database")
+    try:
+        token = authTokenValue
+        cursor = db.cursor()
+        query = "INSERT INTO Tokens (token) VALUES (%s)"
+        cursor.execute(query, (token,))
 
-            if not result:
-                return None
+        nquery = 'SELECT token FROM Tokens WHERE token = %s'
+        cursor.execute(nquery, (token,))
+        result = cursor.fetchone()
 
-            return authTokenValue
-
-        except mysql.connector.Error as err:
-            logging.error(f"Token not created. Error: {err.msg}")
-            return None
-    else:
-        logging.error("Hasn't a  test database")
-        return None
+    except mysql.connector.Error as err:
+        logging.error(f"Token not created. Error: {err.msg}")
+    
+    assert result is not None
+    yield result[0]
     
 
 @pytest.fixture
 def succesReportData():
+
+    now = datetime.now()
+
     return {
         "id": "",
         "accuser_id": "",
@@ -53,39 +51,46 @@ def succesReportData():
         "staff_id": "",
         "staff_username": "",
         "reason": "",
-        "report_date":datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "report_time":"",
+        "report_date":now.strftime("%Y-%m-%d"),
+        "report_time":now.strftime("%H:%M:%S"),
         "server_id":"1",
         "bot":"",
-        "proof": "http://imgur.com, http://flickr.com",
+        "proof": "http://imgur.com/signin, http://flickr.com/about",
     }
 
 
 @pytest.fixture
 def reportRow(db, succesReportData):
     
-    if db:
-        logging.info("Has a test database")
+    logging.info("Has a test database")
 
-        try:
-            keys = "id, accuser_id, offender_id, staff_id, reason, report_date, report_time, bot, proof"
-            splited_keys = keys.split(", ")
-            values = ""
-            for key in splited_keys:
-                values += f"{succesReportData[key]},"
-            values = values[:-1]
+    result = None
+    
+    try:
+
+        accuser_username = succesReportData.pop("accuser_username")
+        staff_username = succesReportData.pop("staff_username")
             
-            cursor = db.cursor()
-            query = "INSERT INTO Report (%s) VALUES (%s)"
-            cursor.execute(query, (keys, values))
+        cursor = db.cursor()
+        query = """INSERT INTO Report 
+            (id, accuser_id, offender_id, staff_id, reason, report_date, report_time, bot, proof) 
+            VALUES 
+            (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+        cursor.execute(query, tuple(succesReportData.values()))
 
-            logging.info("Report created")
+        nquery = """SELECT * FROM Report WHERE
+            id=%s, accuser_id=%s, offender_id=%s, staff_id=%s, reason=%s, report_date=%s, 
+            report_time=%s, bot=%s, proof=%s"""
+        
+        cursor.execute(nquery, tuple(succesReportData.values()))
+        result = cursor.fetchone()
 
-            return succesReportData
+        succesReportData["accuser_username"] = accuser_username
+        succesReportData["staff_username"] = staff_username
 
-        except mysql.connector.Error as err:
-            logging.error(f"Report not created. Error: {err.msg}")
-            return None
-    else:
-        logging.error("Hasn't a test database")
-        return None
+    except mysql.connector.Error as err:
+        logging.error(f"Report not created. Error: {err.msg}")
+
+    assert result is not None
+    yield None

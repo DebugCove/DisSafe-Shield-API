@@ -9,45 +9,43 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.app import create_app
 from app.db.db import connect_database
 
-#def doResquest(client:FlaskClient, method:str, url:str, json:dict, data:dict):
-
-
-
-@pytest.fixture
+@pytest.fixture(scope="session")
 def configureLog():
     logging.basicConfig(level=logging.DEBUG)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app(configureLog):
 
     logging.info("Test App Creation")
 
     flask_app = create_app()
-    flask_app.config.update({
-        "TESTING": True,
-    })
+    flask_app.config['TESTING'] = True
 
     yield flask_app
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def client(app:Flask):
     return app.test_client()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def runner(app:Flask):
     return app.test_cli_runner()
 
 
 @pytest.fixture
-def db(configureLog):
+def db(configureLog, client:FlaskClient):
 
     logging.info("Test DataBase Creation")
 
-    data_base = connect_database()
+    with client.application.app_context():
+        data_base = connect_database()
+    
     data_base.autocommit = False
+
+    assert data_base is not None
 
     yield data_base
 

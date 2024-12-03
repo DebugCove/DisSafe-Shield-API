@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import errorcode
 
-
+#def generate_connection(retries=3, delay=5):  //Code recommendation
 def connect_database(retries=3, delay=5):
     logging.basicConfig(level=logging.DEBUG)
     load_dotenv()
@@ -37,3 +37,19 @@ def connect_database(retries=3, delay=5):
 
     logging.error('Failed to connect to the database')
     return None
+
+
+"""
+from flask import g
+from mysql.connector.pooling import PooledMySQLConnection
+from mysql.connector.abstracts import MySQLConnectionAbstract
+def connect_database():
+    if not g.get('db'):
+        logging.error("Dont have connection")
+        g.db = generate_connection()
+    return g.db if isinstance(g.db, PooledMySQLConnection | MySQLConnectionAbstract) else None
+
+It's a code recommendation. I believe this change will enable the database in tests. 
+Moreover, the use of the g object from Flask for the database is shown in examples 
+in the Flask documentation.
+"""
