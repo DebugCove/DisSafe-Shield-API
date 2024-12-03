@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
-from ...extras.user_validation import user_validation
-from ...extras.token_validation import token_validation
-from ...extras.proof_validation import proof_validation
-from ...extras.id_report_generator import report_id_generator
-from ...extras.check_duplicates import check_duplicates
+
+from app.extras.make_report.user_validation import user_validation
+from app.extras.make_report.proof_validation import proof_validation
+from app.extras.make_report.id_report_generator import report_id_generator
+from app.extras.make_report.check_duplicates import check_duplicates
+from app.extras.token_validation import token_validation
 
 
 main_bp = Blueprint('main', __name__)
@@ -25,7 +26,7 @@ def status():
 def make_report():
     data = request.get_json()
     auth_header = request.headers.get('Authorization')
-    result_token_validation = token_validation(data, auth_header)
+    result_token_validation = token_validation(auth_header)
     if result_token_validation['error']:
         return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
 
@@ -43,8 +44,13 @@ def make_report():
 
     result_proof_validation = proof_validation(data)
     error_proof_validation = result_proof_validation['error']
+    data_result_proof_validation = result_proof_validation['data'][0]['success']
+    data['proof'] = data_result_proof_validation
 
     result_id_generator = report_id_generator()
+    if result_id_generator['error']:
+        return jsonify({'message': result_id_generator['message']}), result_id_generator['status_code']
+    data['id'] = result_id_generator
 
 
     if error_proof_validation:

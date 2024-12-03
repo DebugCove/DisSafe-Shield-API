@@ -12,4 +12,8 @@ python-dotenv
 redis
 flasgger
 gunicorn
+<<<<<<< HEAD
 pytest
+=======
+locust
+>>>>>>> upstream/main
