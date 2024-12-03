@@ -7,18 +7,11 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../..')
 from ..db.db import connect_database
 
 
-def token_validation(data, auth_header):
+def token_validation(auth_header):
     logging.basicConfig(level=logging.DEBUG)
     logging.info('\n\nToken Validation\n')
-    load_dotenv()
-    if not data:
-        logging.error('Data is not defined')
-        return {
-            'error': True,
-            'message': 'Data not defined',
-            'status_code': 400
-        }
 
+    load_dotenv()
     db = connect_database()
     if not db:
         logging.error('Error trying to acess the databse')
