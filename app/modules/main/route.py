@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
-from ...extras.report.user_validation import user_validation
-from ...extras.report.token_validation import token_validation
-from ...extras.report.proof_validation import proof_validation
-from ...extras.report.id_report_generator import report_id_generator
-from ...extras.report.check_duplicates import check_duplicates
+
+from app.extras.make_report.user_validation import user_validation
+from app.extras.make_report.proof_validation import proof_validation
+from app.extras.make_report.id_report_generator import report_id_generator
+from app.extras.make_report.check_duplicates import check_duplicates
+from app.extras.token_validation import token_validation
 
 
 main_bp = Blueprint('main', __name__)
@@ -25,7 +26,7 @@ def status():
 def make_report():
     data = request.get_json()
     auth_header = request.headers.get('Authorization')
-    result_token_validation = token_validation(data, auth_header)
+    result_token_validation = token_validation(auth_header)
     if result_token_validation['error']:
         return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
 

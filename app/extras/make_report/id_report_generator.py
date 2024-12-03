@@ -5,7 +5,7 @@ import uuid
 import mysql
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from db.db import connect_database
+from app.db.db import connect_database
 
 
 def report_id_generator():
