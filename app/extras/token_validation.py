@@ -23,7 +23,7 @@ def token_validation(auth_header):
 
     if auth_header and auth_header.startswith('Bearer '):
         try:
-            token = auth_header.split()[1]
+            token = auth_header.split(' ')[1]
             cursor = db.cursor()
             query = 'SELECT * FROM Tokens WHERE token = %s'
             cursor.execute(query, (token,))
