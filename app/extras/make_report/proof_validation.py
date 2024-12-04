@@ -52,8 +52,6 @@ def proof_validation(data):
             response = requests.get(url, timeout=5)
             if response.status_code in range(200, 299):
                 success.append(url)
-            else:
-                success_but.append(url)
         except requests.exceptions.RequestException as e:
             logging.error('Error: %s', e)
             fails.append(url)
@@ -66,7 +64,7 @@ def proof_validation(data):
                 'status_code': 400
             }
         return {
-            'error': True,
+            'error': False,
             'message': 'All the URLs have been checked, but there are some URLs that are invalid, have problems, or are not allowed.',
             'status_code': 400,
             'data': {
