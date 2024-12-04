@@ -29,7 +29,7 @@ def proof_validation(data):
         }
 
     if isinstance(proof, str):
-        proof = proof.split(', ')
+        proof = proof.split()
 
     for url in proof:
         logging.info('Check the URL: %s', url)
@@ -37,6 +37,7 @@ def proof_validation(data):
         if not isinstance(url, str) or not validators.url(url):
             logging.error('Invalid URL: %s', url)
             invalid.append(url)
+            url.pop(url)
             continue
 
         parsed_url = urlparse(url)
@@ -44,14 +45,13 @@ def proof_validation(data):
         if not any(domain.endswith(allowed_domain) for allowed_domain in allowed_domains):
             logging.error('URL: %s is not in allowed domains', url)
             not_allowed_domains.append(url)
+            url.pop(url)
             continue
 
         try:
             response = requests.get(url, timeout=5)
-            if response.status_code == 200:
+            if response.status_code in range(200, 299):
                 success.append(url)
-            else:
-                success_but.append(url)
         except requests.exceptions.RequestException as e:
             logging.error('Error: %s', e)
             fails.append(url)
@@ -60,11 +60,11 @@ def proof_validation(data):
         if not success:
             return {
                 'error': True,
-                'message': 'The report could not be made because there are no valid urls',
+                'message': 'The report could not be made because there are no valid URLs',
                 'status_code': 400
             }
         return {
-            'error': True,
+            'error': False,
             'message': 'All the URLs have been checked, but there are some URLs that are invalid, have problems, or are not allowed.',
             'status_code': 400,
             'data': {
