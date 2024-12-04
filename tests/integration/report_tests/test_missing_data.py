@@ -1,7 +1,7 @@
 import logging
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix):
+def test_missing_data(client:FlaskClient, url_prefix):
     logging.info("Report route test missing data started")
 
     response = client.post(f"{url_prefix}/report")

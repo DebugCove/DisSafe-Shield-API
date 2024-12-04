@@ -1,7 +1,7 @@
 import logging
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
+def test_missing_proof(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
 
     succesReportData.pop("proof")
 

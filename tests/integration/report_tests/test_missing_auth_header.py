@@ -1,7 +1,7 @@
 import logging
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix, succesReportData):
+def test_missing_auth_header(client:FlaskClient, url_prefix, succesReportData):
     logging.info("Report route test missing auth header started")
 
     response = client.post(f"{url_prefix}/report",

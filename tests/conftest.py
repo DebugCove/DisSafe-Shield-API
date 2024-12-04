@@ -14,7 +14,7 @@ def configureLog():
     logging.basicConfig(level=logging.DEBUG)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def app(configureLog):
 
     logging.info("Test App Creation")
@@ -25,12 +25,13 @@ def app(configureLog):
     yield flask_app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def client(app:Flask):
-    return app.test_client()
+    with app.app_context():
+        return app.test_client()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def runner(app:Flask):
     return app.test_cli_runner()
 
@@ -41,13 +42,14 @@ def db(configureLog, client:FlaskClient):
     logging.info("Test DataBase Creation")
 
     with client.application.app_context():
+        
         data_base = connect_database()
     
-    data_base.autocommit = False
+        data_base.autocommit = False
 
-    assert data_base is not None
+        assert data_base is not None
 
-    yield data_base
+        yield data_base
 
-    data_base.rollback()
-    data_base.close()
+        data_base.rollback()
+        data_base.close()

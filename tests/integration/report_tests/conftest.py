@@ -45,16 +45,16 @@ def succesReportData():
 
     return {
         "id": "",
-        "accuser_id": "",
-        "accuser_username": "",
+        "accuser_id": "1",
+        "accuser_username": "any",
         "offender_id":"1",
-        "staff_id": "",
-        "staff_username": "",
-        "reason": "",
+        "staff_id": "1",
+        "staff_username": "anything",
+        "reason": "anyreason",
         "report_date":now.strftime("%Y-%m-%d"),
         "report_time":now.strftime("%H:%M:%S"),
         "server_id":"1",
-        "bot":"",
+        "bot":"anybot",
         "proof": "http://imgur.com/signin, http://flickr.com/about",
     }
 

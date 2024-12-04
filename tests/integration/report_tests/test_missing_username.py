@@ -1,7 +1,7 @@
 import logging
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
+def test_missing_username(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
 
     succesReportData.pop("staff_username")
 
@@ -15,5 +15,5 @@ def test(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
     json = response.get_json()
     assert json
     res = json["message"]
-    assert res == 'Username not found'
+    assert res == 'Id or username not found'
     assert response.status_code == 400

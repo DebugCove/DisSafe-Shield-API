@@ -1,7 +1,7 @@
 import logging
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix, succesReportData, createTokenRow, reportRow):
+def test_existing_offender_id(client:FlaskClient, url_prefix, succesReportData, createTokenRow, reportRow):
 
     response = client.post(f"{url_prefix}/report",
                                     

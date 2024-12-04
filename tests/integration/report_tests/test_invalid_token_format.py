@@ -1,6 +1,6 @@
 from flask.testing import FlaskClient
 
-def test(client:FlaskClient, url_prefix, succesReportData):
+def test_invalid_token_format(client:FlaskClient, url_prefix, succesReportData):
 
     response = client.post(f"{url_prefix}/report",
         json = succesReportData,
