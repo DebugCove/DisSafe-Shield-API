@@ -97,6 +97,6 @@ def check_duplicates(data):
             'status_code': 500
         }
     finally:
-        if db.is_connected():
-            cursor.close()
-            db.close()
+            if db.is_connected():
+                cursor.close()
+                db.close()
