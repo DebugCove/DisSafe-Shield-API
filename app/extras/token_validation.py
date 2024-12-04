@@ -3,8 +3,8 @@ import sys
 import os
 from dotenv import load_dotenv
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../..')
-from ..db.db import connect_database
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from app.db.db import connect_database
 
 
 def token_validation(auth_header):
