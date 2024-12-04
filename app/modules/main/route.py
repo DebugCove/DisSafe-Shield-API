@@ -5,6 +5,8 @@ from app.extras.make_report.proof_validation import proof_validation
 from app.extras.make_report.id_report_generator import report_id_generator
 from app.extras.make_report.check_duplicates import check_duplicates
 from app.extras.token_validation import token_validation
+from app.extras.info_generator import generate_date
+from app.extras.info_generator import generate_hour
 
 
 main_bp = Blueprint('main', __name__)
@@ -44,13 +46,15 @@ def make_report():
 
     result_proof_validation = proof_validation(data)
     error_proof_validation = result_proof_validation['error']
-    data_result_proof_validation = result_proof_validation['data'][0]['success']
-    data['proof'] = data_result_proof_validation
+    successful_urls = result_proof_validation['data']['success']
+    data['proof'] = successful_urls
 
     result_id_generator = report_id_generator()
     if result_id_generator['error']:
         return jsonify({'message': result_id_generator['message']}), result_id_generator['status_code']
     data['id'] = result_id_generator
+    data['report_date'] = generate_date
+    data['report_time'] = generate_hour
 
 
     if error_proof_validation:
