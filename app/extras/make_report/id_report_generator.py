@@ -58,7 +58,9 @@ def report_id_generator():
             'error': False,
             'message': 'New ID generated',
             'status_code': 201,
-            'data': formatted_new_id
+            'data': {
+                'id': formatted_new_id
+            }
         }
     except mysql.connector.Error as err:
         logging.error('Database error: %s', err)
