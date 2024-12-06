@@ -4,6 +4,7 @@ from app.extras.make_report.user_validation import user_validation
 from app.extras.make_report.proof_validation import proof_validation
 from app.extras.make_report.id_report_generator import report_id_generator
 from app.extras.make_report.check_duplicates import check_duplicates
+from app.extras.make_report.request_database import request_database
 from app.extras.token_validation import token_validation
 from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
@@ -46,18 +47,27 @@ def make_report():
 
     result_proof_validation = proof_validation(data)
     error_proof_validation = result_proof_validation['error']
+    if error_proof_validation:
+        return jsonify({'message': result_proof_validation['message']}), result_proof_validation['status_code']
     successful_urls = result_proof_validation['data']['success']
+    success_but_urls = result_proof_validation['data']['success_but']
+    fails_urls = result_proof_validation['data']['fails']
+    invalid_urls = result_proof_validation['data']['invalid']
+    not_allowed_domains = result_proof_validation['data']['not_allowed_domains']
     data['proof'] = successful_urls
 
     result_id_generator = report_id_generator()
     if result_id_generator['error']:
         return jsonify({'message': result_id_generator['message']}), result_id_generator['status_code']
-    data['id'] = result_id_generator
-    data['report_date'] = generate_date
-    data['report_time'] = generate_hour
+    data['id'] = result_id_generator['data']['id']
+    data['report_date'] = generate_date()
+    data['report_time'] = generate_hour()
 
+    result_request_database = request_database(data)
+    if result_request_database['error']:
+        return jsonify({'message': result_request_database['message']}), result_request_database['status_code']
 
-    if error_proof_validation:
+    if success_but_urls or fails_urls or invalid_urls or not_allowed_domains:
         return jsonify({'message': 'Report was completed successfully, but some links were not included.'}), 200
     else:
         return jsonify({'message': 'Report sent successfully.'}), 200
