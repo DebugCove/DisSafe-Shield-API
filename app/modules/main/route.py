@@ -5,6 +5,7 @@ from app.extras.make_report.proof_validation import proof_validation
 from app.extras.make_report.id_report_generator import report_id_generator
 from app.extras.make_report.check_duplicates import check_duplicates
 from app.extras.make_report.request_database import request_database
+from app.extras.make_report.missing_data import missing_data
 from app.extras.token_validation import token_validation
 from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
@@ -32,6 +33,10 @@ def make_report():
     result_token_validation = token_validation(auth_header)
     if result_token_validation['error']:
         return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
+
+    result_missing_data = missing_data(data)
+    if result_missing_data['error']:
+        return jsonify({'message': result_missing_data['message']}), result_missing_data['status_code']
 
     result_check_duplicates = check_duplicates(data)
     if result_check_duplicates['error']:
