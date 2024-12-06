@@ -82,5 +82,9 @@ def proof_validation(data):
         'status_code': 200,
         'data': {
             'success': success,
+            'success_but': success_but,
+            'fails': fails,
+            'invalid': invalid,
+            'not_allowed_domains': not_allowed_domains,
         }
     }
