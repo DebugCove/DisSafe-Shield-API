@@ -37,7 +37,6 @@ def proof_validation(data):
         if not isinstance(url, str) or not validators.url(url):
             logging.error('Invalid URL: %s', url)
             invalid.append(url)
-            url.pop(url)
             continue
 
         parsed_url = urlparse(url)
@@ -45,7 +44,6 @@ def proof_validation(data):
         if not any(domain.endswith(allowed_domain) for allowed_domain in allowed_domains):
             logging.error('URL: %s is not in allowed domains', url)
             not_allowed_domains.append(url)
-            url.pop(url)
             continue
 
         try:
