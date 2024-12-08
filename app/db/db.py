@@ -18,6 +18,9 @@ def connect_database(retries=3, delay=5):
         'port': getenv('DB_PORT'),
     }
 
+    if getenv('FLASK_ENV') == 'development':
+        database_config['database'] = getenv('DB_DTB_TESTING'),
+
     for i in range(retries):
         logging.info('Connecting to database...')
         try:

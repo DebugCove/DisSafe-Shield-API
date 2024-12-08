@@ -10,10 +10,10 @@ app = create_app()
 if __name__ == "__main__":
     HOST = getenv('HOST')
     if config == 'development':
-        DEBUG = getenv('DEBUG_DEVELOPMENT')
+        DEBUG = True
         PORT = getenv('PORT_DEVELOPMENT')
     else:
-        DEBUG = getenv('DEBUG_PRODUCTION')
+        DEBUG = False
         PORT = getenv('PORT_PRODUCTION')
 
     app.run(debug=DEBUG, host=HOST, port=PORT)
