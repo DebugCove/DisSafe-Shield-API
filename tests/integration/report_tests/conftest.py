@@ -6,23 +6,18 @@ from datetime import datetime
 import secrets
 
 @pytest.fixture(scope="session")
-def authTokenValue():
-    return secrets.token_urlsafe(16)
-
-
-@pytest.fixture(scope="session")
 def url():
     return "/api/v1/report"
 
 
 @pytest.fixture(scope="session")
-def createTokenRow(db, authTokenValue):
+def createTokenRow(db):
     
     result = None
 
     logging.info("Has a test database")
     try:
-        token = authTokenValue
+        token = secrets.token_urlsafe(16)
         cursor = db.cursor()
         query = "INSERT INTO Tokens (token) VALUES (%s)"
         cursor.execute(query, (token,))
@@ -36,7 +31,14 @@ def createTokenRow(db, authTokenValue):
         logging.error(f"Token not created. Error: {err.msg}")
     
     assert result is not None
-    return result[0]
+    yield token
+
+    cursor = db.cursor()
+    query = "DELETE FROM Tokens WHERE token = %s"
+
+    cursor.execute(query,(token,))
+
+    db.commit()
     
 
 @pytest.fixture
@@ -45,7 +47,7 @@ def succesReportData():
     now = datetime.now()
 
     return {
-        "id": 1232432,
+        "id": "hohohoho",
         "accuser_id": 457943440387342336,
         "accuser_username": "jrgames1234",
         "offender_id": 395546295940415510,
@@ -74,6 +76,7 @@ def reportRow(db, succesReportData):
         accuser_id = succesReportData['accuser_id']
         offender_id = succesReportData['offender_id']
         staff_id = succesReportData['staff_id']
+        server_id = succesReportData['server_id']
         reason = succesReportData['reason']
         report_date = succesReportData['report_date']
         report_time = succesReportData['report_time']
@@ -82,26 +85,35 @@ def reportRow(db, succesReportData):
             
         cursor = db.cursor()
         query = """INSERT INTO Report 
-            (id, accuser_id, offender_id, staff_id, reason, report_date, report_time, bot, proof) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            (id, accuser_id, offender_id, staff_id, server_id, reason, report_date, report_time, bot, proof) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
         cursor.execute(query, (
-            id, accuser_id, offender_id, staff_id, reason, report_date, report_time, bot, proof
+            id, accuser_id, offender_id, staff_id, server_id, reason, report_date, report_time, bot, proof
         ))
 
         nquery = """SELECT * FROM Report WHERE
-            id=%s AND accuser_id=%s AND offender_id=%s AND staff_id=%s AND reason=%s AND report_date=%s AND 
+            id=%s AND accuser_id=%s AND offender_id=%s AND staff_id=%s AND server_id=%s AND reason=%s AND report_date=%s AND 
             report_time=%s AND bot=%s AND proof=%s"""
         
         cursor.execute(nquery, (
-            id, accuser_id, offender_id, staff_id, reason, report_date, report_time, bot, proof
+            id, accuser_id, offender_id, staff_id, server_id, reason, report_date, report_time, bot, proof
         ))
 
-        result = cursor.fetchone()[0]
+        result = cursor.fetchone()
+
+        db.commit()
 
 
     except mysql.connector.Error as err:
         logging.error(f"Report not created. Error: {err.msg}")
 
     assert result is not None
-    return None
+    yield None
+
+    cursor = db.cursor()
+    delete_query = "DELETE FROM Report WHERE id = %s"
+
+    cursor.execute(delete_query, (id,))
+
+    db.commit()
