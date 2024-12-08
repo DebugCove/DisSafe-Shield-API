@@ -10,7 +10,7 @@ from app.db.db import connect_database
 
 def check_duplicates(data):
     logging.basicConfig(level=logging.DEBUG)
-    logging.info('\n\nCheck duplicates report')
+    logging.info('\n\nCheck duplicates report\n')
 
     if not data:
         logging.error('No data was provided')
@@ -61,14 +61,17 @@ def check_duplicates(data):
 
         query = 'SELECT EXISTS (SELECT 1 FROM Report WHERE offender_id = %s AND server_id = %s)'
         cursor.execute(query, (offender_id, server_id))
+        logging.info('Executed the query in the database')
         result = cursor.fetchone()
 
         if result and result[0]:
+            logging.error('Report is already in the database')
             return {
                 'error': True,
                 'message': 'Report is duplicate',
                 'status_code': 400
             }
+        logging.info('Report is not in the database')
         return {
             'error': False,
             'message': 'Report is not duplicate',
@@ -97,6 +100,7 @@ def check_duplicates(data):
             'status_code': 500
         }
     finally:
-            if db.is_connected():
-                cursor.close()
-                db.close()
+        if db.is_connected():
+            logging.info('Closing the database connection')
+            cursor.close()
+            db.close()

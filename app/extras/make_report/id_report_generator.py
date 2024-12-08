@@ -10,7 +10,7 @@ from app.db.db import connect_database
 
 def report_id_generator():
     logging.basicConfig(level=logging.DEBUG)
-    logging.info('\n\nGenerate ID report')
+    logging.info('\n\nGenerate ID report\n')
 
     db = connect_database()
     logging.info('Trying to access the database')
@@ -78,5 +78,5 @@ def report_id_generator():
         }
     finally:
         if db and db.is_connected():
-            db.close()
             logging.info('Database connection closed')
+            db.close()

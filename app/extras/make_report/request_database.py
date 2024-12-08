@@ -1,7 +1,6 @@
 import logging
 import sys
 import os
-import mysql.connector
 from mysql.connector import Error, InterfaceError, DatabaseError, IntegrityError, OperationalError
 
 
@@ -11,7 +10,7 @@ from app.db.db import connect_database
 
 def request_database(data):
     logging.basicConfig(level=logging.DEBUG)
-    logging.info('\n\nRequest database: make report\n\n')
+    logging.info('\n\nRequest database: make report\n')
 
     db = connect_database()
     if not db.is_connected():
@@ -54,6 +53,7 @@ def request_database(data):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         values = (id, accuser_id, offender_id, staff_id, reason, report_date, report_time, server_id, bot, proof)
+        logging.info('Executed the query in the database')
         cursor.execute(query, values)
         db.commit()
         logging.info('Report successfully inserted into the database')
@@ -108,5 +108,6 @@ def request_database(data):
         }
     finally:
         if db.is_connected():
+            logging.info('Database connection closed')
             cursor.close()
             db.close()

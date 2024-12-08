@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 def proof_validation(data):
     logging.basicConfig(level=logging.DEBUG)
-    logging.info('\n\nProof Validation')
+    logging.info('\n\nProof Validation\n')
 
     allowed_domains = [
         'imgur.com', 'flickr.com', 'photos.google.com', 'dropbox.com', 

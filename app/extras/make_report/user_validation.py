@@ -7,6 +7,7 @@ from os import getenv
 def user_validation(data, status):
     logging.basicConfig(level=logging.DEBUG)
     logging.info('\n\nUser validation\n')
+
     load_dotenv()
     if not data or not status:
         logging.error('Data or status is not defined')

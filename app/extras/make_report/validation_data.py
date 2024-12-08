@@ -1,6 +1,19 @@
 import re
+import logging
+
 
 def validation_data(data):
+    logging.basicConfig(level=logging.DEBUG)
+    logging.info('\n\nValidate the report date\n')
+
+    if not data:
+        logging.error('Data is not defined')
+        return {
+            'error': True,
+            'message': 'Data is not defined',
+            'status_code': 400
+        }
+
     dangerous_patterns = [
         r"<.*?>", 
         r"<\?php.*?\?>",
@@ -18,9 +31,18 @@ def validation_data(data):
     ]
 
     for key, value in data.items():
+        if value is None:
+            logging.error('Null pointer reference')
+            return {
+                'error': True,
+                'message': 'Data is not defined',
+                'status_code': 400
+            }
+
         if isinstance(value, str):
             for pattern in dangerous_patterns:
                 if re.search(pattern, value):
+                    logging.error('Invalid value entered')
                     return {
                         'error': True,
                         'message': 'Invalid value entered',
@@ -29,12 +51,14 @@ def validation_data(data):
         elif isinstance(value, (int, bool)):
             continue
         else:
+            logging.error('Invalid value entered')
             return {
                 'error': True,
                 'message': 'Invalid value entered',
                 'status_code': 400
             }
 
+    logging.info('All values entered are valid')
     return {
         'error': False,
         'message': 'All values entered are valid',
