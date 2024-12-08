@@ -4,6 +4,7 @@ import logging
 import mysql.connector
 from datetime import datetime
 import secrets
+import uuid
 
 @pytest.fixture(scope="session")
 def url():
@@ -47,7 +48,6 @@ def succesReportData():
     now = datetime.now()
 
     return {
-        "id": "hohohoho",
         "accuser_id": 457943440387342336,
         "accuser_username": "jrgames1234",
         "offender_id": 395546295940415510,
@@ -72,7 +72,7 @@ def reportRow(db, succesReportData):
     
     try:
 
-        id = succesReportData['id']
+        id = str(uuid.uuid4()).replace('-', '')
         accuser_id = succesReportData['accuser_id']
         offender_id = succesReportData['offender_id']
         staff_id = succesReportData['staff_id']
