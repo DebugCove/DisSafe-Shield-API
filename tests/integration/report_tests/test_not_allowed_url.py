@@ -15,5 +15,5 @@ def test_not_allowed_url(client:FlaskClient, url, succesReportData, createTokenR
     )
     json = response.get_json()
     res = json["message"]
-    assert res == 'Report was completed successfully, but some links were not included.'
+    assert res == 'The report could not be made because there are no valid URLs'
     assert response.status_code == 400

@@ -44,13 +44,6 @@ def db(configureLog, app:Flask):
 
     assert data_base is not None
 
-    @app.after_request
-    def rollback_db(response):
-        if data_base.is_connected:
-            data_base.rollback()
-        return response
-
     yield data_base
 
-    data_base.rollback()
     data_base.close()

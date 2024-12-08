@@ -58,7 +58,7 @@ def succesReportData():
         "report_date": now.strftime("%Y-%m-%d"),
         "report_time": now.strftime("%H:%M:%S"),
         "server_id": 1245457789653094531,
-        "bot": "anybot",
+        "bot": True,
         "proof": "http://imgur.com/signin, http://flickr.com/about",
     }
 
