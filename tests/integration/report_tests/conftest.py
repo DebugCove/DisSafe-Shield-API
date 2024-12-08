@@ -5,7 +5,7 @@ import mysql.connector
 from datetime import datetime
 import secrets
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def authTokenValue():
     return secrets.token_urlsafe(16)
 
@@ -15,7 +15,7 @@ def url():
     return "/api/v1/report"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def createTokenRow(db, authTokenValue):
     
     result = None
