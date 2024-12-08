@@ -1,12 +1,12 @@
 import logging
 from flask.testing import FlaskClient
 
-def test_not_allowed_url(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
+def test_not_allowed_url(client:FlaskClient, url, succesReportData, createTokenRow):
 
-    url = "http://youtube.com"
-    succesReportData["proof"] = url
+    proof_url = "http://youtube.com"
+    succesReportData["proof"] = proof_url
 
-    response = client.post(f"{url_prefix}/report",
+    response = client.post(url,
                                     
         json = succesReportData,
         headers = {

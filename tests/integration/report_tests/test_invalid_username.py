@@ -2,11 +2,11 @@ import logging
 from flask.testing import FlaskClient
 
 
-def test_invalid_username(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
+def test_invalid_username(client:FlaskClient, url, succesReportData, createTokenRow):
 
     succesReportData["staff_username"] = "other"
 
-    response = client.post(f"{url_prefix}/report",
+    response = client.post(url,
                                     
         json = succesReportData,
         headers = {

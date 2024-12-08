@@ -1,10 +1,10 @@
 import logging
 from flask.testing import FlaskClient
 
-def test_succes(client:FlaskClient, url_prefix, succesReportData, createTokenRow):
+def test_succes(client:FlaskClient, url, succesReportData, createTokenRow):
     logging.info("Succes report route test started")
 
-    response = client.post(f"{url_prefix}/report",
+    response = client.post(url,
                                     
         json = succesReportData,
         headers = {

@@ -3,18 +3,20 @@ import sys
 import os
 import logging
 from flask import Flask
-from flask.testing import FlaskClient, EnvironBuilder
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.app import create_app
 from app.db.db import connect_database
+
+
+
 
 @pytest.fixture(scope="session")
 def configureLog():
     logging.basicConfig(level=logging.DEBUG)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def app(configureLog):
 
     logging.info("Test App Creation")
@@ -25,31 +27,30 @@ def app(configureLog):
     yield flask_app
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def client(app:Flask):
-    with app.app_context():
-        return app.test_client()
+    return app.test_client()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def runner(app:Flask):
     return app.test_cli_runner()
 
 
-@pytest.fixture
-def db(configureLog, client:FlaskClient):
-
-    logging.info("Test DataBase Creation")
-
-    with client.application.app_context():
+@pytest.fixture(scope="session")
+def db(configureLog, app:Flask):
         
-        data_base = connect_database()
-    
-        data_base.autocommit = False
+    data_base = connect_database()
 
-        assert data_base is not None
+    assert data_base is not None
 
-        yield data_base
+    @app.after_request
+    def rollback_db(response):
+        if data_base.is_connected:
+            data_base.rollback()
+        return response
 
-        data_base.rollback()
-        data_base.close()
+    yield data_base
+
+    data_base.rollback()
+    data_base.close()
