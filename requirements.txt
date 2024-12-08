@@ -13,3 +13,4 @@ redis
 flasgger
 gunicorn
 locust
+pytest
