@@ -7,6 +7,7 @@ from app.extras.make_report.check_duplicates import check_duplicates
 from app.extras.make_report.request_database import request_database
 from app.extras.make_report.missing_data import missing_data
 from app.extras.make_report.validation_data import validation_data
+from app.extras.view_report.get_info import get_info_report
 from app.extras.token_validation import token_validation
 from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
@@ -81,3 +82,22 @@ def make_report():
         return jsonify({'message': 'Report was completed successfully, but some links were not included.'}), 200
     else:
         return jsonify({'message': 'Report sent successfully.'}), 200
+
+@main_bp.route('/view_report', methods=['GET'])
+def view_report():
+    auth_header = request.headers.get('Authorization')
+    result_token_validation = token_validation(auth_header)
+    if result_token_validation['error']:
+        return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
+
+    id = request.args.get('id', type=str)
+    if id is None:
+        return jsonify({'message': 'ID is not found'})
+
+    result_info_report = get_info_report(id)
+    if result_info_report['error']:
+        return jsonify({'message': result_info_report['message']}), result_info_report['status_code']
+
+    return jsonify({
+        'message': result_info_report['message'], 
+        'data': result_info_report['data']}), result_info_report['status_code']
