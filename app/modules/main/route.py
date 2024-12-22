@@ -8,6 +8,7 @@ from app.extras.make_report.request_database import request_database
 from app.extras.make_report.missing_data import missing_data
 from app.extras.make_report.validation_data import validation_data
 from app.extras.view_report.get_info import get_info_report
+from app.extras.view_all_reports.get_all_info import get_all_report
 from app.extras.token_validation import token_validation
 from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
@@ -97,6 +98,25 @@ def view_report():
         return jsonify({'message': 'ID is not found'})
 
     result_info_report = get_info_report(id)
+    if result_info_report['error']:
+        return jsonify({'message': result_info_report['message']}), result_info_report['status_code']
+
+    return jsonify({
+        'message': result_info_report['message'], 
+        'data': result_info_report['data']}), result_info_report['status_code']
+
+@main_bp.route('/view_all_report', methods=['GET'])
+def view_all_report():
+    auth_header = request.headers.get('Authorization')
+    result_token_validation = token_validation(auth_header)
+    if result_token_validation['error']:
+        return jsonify({'message': result_token_validation['message']}), result_token_validation['status_code']
+
+    params = request.args
+    if params:
+        return jsonify({'message': 'The route does accept parameters'}), 400
+
+    result_info_report = get_all_report()
     if result_info_report['error']:
         return jsonify({'message': result_info_report['message']}), result_info_report['status_code']
 
