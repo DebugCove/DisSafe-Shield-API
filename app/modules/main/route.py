@@ -26,9 +26,11 @@ def index():
     else:
         return jsonify({'message': 'DisSafe API running'})
 
+
 @main.route('/status', methods=['GET'])
 def status():
     return jsonify({'status': 'ok'})
+
 
 @main_report.route('/make_report', methods=['POST'])
 def make_report():
@@ -87,6 +89,7 @@ def make_report():
         return jsonify({'message': 'Report sent successfully.',
         'id': data['id']}), 200
 
+
 @main_report.route('/view_report', methods=['GET'])
 def view_report():
     auth_header = request.headers.get('Authorization')
@@ -105,6 +108,7 @@ def view_report():
     return jsonify({
         'message': result_info_report['message'], 
         'data': result_info_report['data']}), result_info_report['status_code']
+
 
 @main_report.route('/view_all_report', methods=['GET'])
 def view_all_report():
