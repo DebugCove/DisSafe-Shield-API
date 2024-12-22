@@ -14,10 +14,11 @@ from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
 
 
-main_bp = Blueprint('main', __name__)
+main = Blueprint('main', __name__)
+main_report = Blueprint('main_report', __name__)
 
 
-@main_bp.route('/', methods=['GET'])
+@main.route('/', methods=['GET'])
 def index():
     params = request.args
     if params:
@@ -25,11 +26,11 @@ def index():
     else:
         return jsonify({'message': 'DisSafe API running'})
 
-@main_bp.route('/status', methods=['GET'])
+@main.route('/status', methods=['GET'])
 def status():
     return jsonify({'status': 'ok'})
 
-@main_bp.route('/make_report', methods=['POST'])
+@main_report.route('/make_report', methods=['POST'])
 def make_report():
     data = request.get_json()
     auth_header = request.headers.get('Authorization')
@@ -86,7 +87,7 @@ def make_report():
         return jsonify({'message': 'Report sent successfully.',
         'id': data['id']}), 200
 
-@main_bp.route('/view_report', methods=['GET'])
+@main_report.route('/view_report', methods=['GET'])
 def view_report():
     auth_header = request.headers.get('Authorization')
     result_token_validation = token_validation(auth_header)
@@ -105,7 +106,7 @@ def view_report():
         'message': result_info_report['message'], 
         'data': result_info_report['data']}), result_info_report['status_code']
 
-@main_bp.route('/view_all_report', methods=['GET'])
+@main_report.route('/view_all_report', methods=['GET'])
 def view_all_report():
     auth_header = request.headers.get('Authorization')
     result_token_validation = token_validation(auth_header)
