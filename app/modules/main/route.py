@@ -28,7 +28,7 @@ def index():
 def status():
     return jsonify({'status': 'ok'})
 
-@main_bp.route('/report', methods=['POST'])
+@main_bp.route('/make_report', methods=['POST'])
 def make_report():
     data = request.get_json()
     auth_header = request.headers.get('Authorization')
@@ -79,9 +79,11 @@ def make_report():
         return jsonify({'message': result_request_database['message']}), result_request_database['status_code']
 
     if success_but_urls or fails_urls or invalid_urls or not_allowed_domains:
-        return jsonify({'message': 'Report was completed successfully, but some links were not included.'}), 200
+        return jsonify({'message': 'Report was completed successfully, but some links were not included.',
+        'id': data['id']}), 200
     else:
-        return jsonify({'message': 'Report sent successfully.'}), 200
+        return jsonify({'message': 'Report sent successfully.',
+        'id': data['id']}), 200
 
 @main_bp.route('/view_report', methods=['GET'])
 def view_report():
