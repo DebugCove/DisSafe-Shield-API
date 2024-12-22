@@ -1,14 +1,14 @@
 from flask import Blueprint, jsonify, request
 
-from app.extras.make_report.user_validation import user_validation
-from app.extras.make_report.proof_validation import proof_validation
-from app.extras.make_report.id_report_generator import report_id_generator
-from app.extras.make_report.check_duplicates import check_duplicates
-from app.extras.make_report.request_database import request_database
-from app.extras.make_report.missing_data import missing_data
-from app.extras.make_report.validation_data import validation_data
-from app.extras.view_report.get_info import get_info_report
-from app.extras.view_all_reports.get_all_info import get_all_report
+from app.extras.report.make_report.user_validation import user_validation
+from app.extras.report.make_report.proof_validation import proof_validation
+from app.extras.report.make_report.id_report_generator import report_id_generator
+from app.extras.report.make_report.check_duplicates import check_duplicates
+from app.extras.report.make_report.request_database import request_database
+from app.extras.report.make_report.missing_data import missing_data
+from app.extras.report.make_report.validation_data import validation_data
+from app.extras.report.view_report.get_info import get_info_report
+from app.extras.report.view_all_reports.get_all_info import get_all_report
 from app.extras.token_validation import token_validation
 from app.extras.info_generator import generate_date
 from app.extras.info_generator import generate_hour
