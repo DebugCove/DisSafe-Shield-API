@@ -9,7 +9,7 @@ from app.db.db import connect_database
 
 def get_info_report(report_id):
     logging.basicConfig(level=logging.DEBUG)
-    logging.info('\n\nCheck duplicates report\n')
+    logging.info('\n\nGet unique info report\n')
 
     information_list = [
         'id',
