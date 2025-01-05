@@ -24,7 +24,7 @@ def get_info_report(report_id):
         'proof'
     ]
 
-    if not report_id:
+    if report_id is None:
         logging.error('No report ID was provided')
         return {
             'error': True,
@@ -34,7 +34,7 @@ def get_info_report(report_id):
 
     db = connect_database()
     logging.info('Attempting to connect to the database')
-    if not db or not db.is_connected():
+    if db is None or not db.is_connected():
         logging.error('Failed to connect to the database')
         return {
             'error': True,

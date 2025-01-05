@@ -14,7 +14,7 @@ def report_id_generator():
 
     db = connect_database()
     logging.info('Trying to access the database')
-    if not db:
+    if db is None:
         logging.error('Error trying to access the database')
         return {
             'error': True,

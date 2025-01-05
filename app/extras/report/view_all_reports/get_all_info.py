@@ -26,7 +26,7 @@ def get_all_report():
 
     db = connect_database()
     logging.info('Attempting to connect to the database')
-    if not db or not db.is_connected():
+    if db is None or not db.is_connected():
         logging.error('Failed to connect to the database')
         return {
             'error': True,

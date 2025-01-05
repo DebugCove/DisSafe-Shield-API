@@ -9,7 +9,7 @@ def user_validation(data, status):
     logging.info('\n\nUser validation\n')
 
     load_dotenv()
-    if not data or not status:
+    if data is None or status is None:
         logging.error('Data or status is not defined')
         return {
             'error': True,
@@ -26,7 +26,7 @@ def user_validation(data, status):
         id = data.get('accuser_id')
         username = data.get('accuser_username')
 
-    if not id or not username:
+    if id is None or username is None:
         logging.error('ID or username is not defined')
         return {
             'error': True,
@@ -35,7 +35,7 @@ def user_validation(data, status):
         }
 
     TOKEN = getenv('TOKEN')
-    if not TOKEN:
+    if TOKEN is None:
         logging.error('Token is not defined')
         return {
             'error': True,

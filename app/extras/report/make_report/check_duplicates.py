@@ -12,7 +12,7 @@ def check_duplicates(data):
     logging.basicConfig(level=logging.DEBUG)
     logging.info('\n\nCheck duplicates report\n')
 
-    if not data:
+    if data is None:
         logging.error('No data was provided')
         return {
             'error': True,
@@ -22,7 +22,7 @@ def check_duplicates(data):
 
     db = connect_database()
     logging.info('Trying to access the database')
-    if not db:
+    if db is None:
         logging.error('Error trying to access the database')
         return {
             'error': True,
@@ -33,7 +33,7 @@ def check_duplicates(data):
     offender_id = data.get('offender_id')
     server_id = data.get('server_id')
 
-    if not offender_id or not server_id:
+    if offender_id is None or server_id is None:
         logging.error('offender_id or server_id were not provided')
         return {
             'error': True,

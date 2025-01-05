@@ -6,7 +6,7 @@ def validation_data(data):
     logging.basicConfig(level=logging.DEBUG)
     logging.info('\n\nValidate the report date\n')
 
-    if not data:
+    if data is None:
         logging.error('Data is not defined')
         return {
             'error': True,
