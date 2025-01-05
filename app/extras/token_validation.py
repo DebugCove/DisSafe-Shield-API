@@ -13,7 +13,7 @@ def token_validation(auth_header):
 
     load_dotenv()
     db = connect_database()
-    if not db:
+    if db is None:
         logging.error('Error trying to acess the databse')
         return {
             'error': True,
@@ -24,6 +24,13 @@ def token_validation(auth_header):
     if auth_header and auth_header.startswith('Bearer '):
         try:
             token = auth_header.split()[1]
+            if token is None:
+                logging.error('The token entered is not valid format')
+                return {
+                    'error': True,
+                    'message': 'Not valid token format',
+                    'status_code': 400
+                }
             cursor = db.cursor()
             query = 'SELECT * FROM Tokens WHERE token = %s'
             cursor.execute(query, (token,))
