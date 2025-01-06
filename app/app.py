@@ -12,11 +12,14 @@ def create_app() -> Flask:
     initialize_route(app)
     initialize_swagger(app)
     compression(app)
-    Talisman(app, content_type_options=True, x_xss_protection=True, frame_options='DENY')
+    Talisman(app)
 
 
     @app.after_request
     def aplicar_cors(resposta):
+        resposta.headers['X-Content-Type-Options'] = 'nosniff'
+        resposta.headers['X-XSS-Protection'] = '1; mode=block'
+        resposta.headers['X-Frame-Options'] = 'DENY'
         resposta.headers["Access-Control-Allow-Origin"] = "https://discord.com"
         resposta.headers["Access-Control-Allow-Methods"] = "GET, POST"
         resposta.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
