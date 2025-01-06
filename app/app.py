@@ -1,11 +1,8 @@
 import secrets
 from flask import Flask
-from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
 from app.initialize_functions import initialize_route, initialize_swagger
 from app.middleware.compression import compression
-
-
-csrf = CSRFProtect()
 
 
 def create_app() -> Flask:
@@ -15,7 +12,8 @@ def create_app() -> Flask:
     initialize_route(app)
     initialize_swagger(app)
     compression(app)
-    csrf.init_app(app)
+    Talisman(app, content_type_options=True, x_xss_protection=True, frame_options='DENY')
+
 
     @app.after_request
     def aplicar_cors(resposta):
