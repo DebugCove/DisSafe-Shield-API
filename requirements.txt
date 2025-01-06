@@ -1,16 +1,12 @@
-black
 Flask 
 flask-compress
 flask-talisman
 Flask-Limiter
-flask-cors
-flask-wtf
 werkzeug
 requests
-validators
 mysql-connector-python
+validators
 python-dotenv 
-redis
 flasgger
 gunicorn
 locust
