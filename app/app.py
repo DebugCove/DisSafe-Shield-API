@@ -16,13 +16,13 @@ def create_app() -> Flask:
 
 
     @app.after_request
-    def aplicar_cors(resposta):
-        resposta.headers['X-Content-Type-Options'] = 'nosniff'
-        resposta.headers['X-XSS-Protection'] = '1; mode=block'
-        resposta.headers['X-Frame-Options'] = 'DENY'
-        resposta.headers["Access-Control-Allow-Origin"] = "https://discord.com"
-        resposta.headers["Access-Control-Allow-Methods"] = "GET, POST"
-        resposta.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        return resposta
+    def security_settings(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers["Access-Control-Allow-Origin"] = "https://discord.com"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response
 
     return app
