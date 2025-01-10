@@ -1,6 +1,5 @@
 Flask 
 flask-compress
-flask-talisman
 Flask-Limiter
 werkzeug
 requests
