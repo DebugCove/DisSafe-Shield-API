@@ -59,6 +59,10 @@ The API provides endpoints for moderation, block lists and server management. Th
 ```bash
 http://IP_DJANGO/docs
 ```
+or
+```bash
+http://IP_DJANGO/api/
+```
 
 
 ## Contributing
