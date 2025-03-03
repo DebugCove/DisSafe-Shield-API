@@ -20,7 +20,7 @@ jobs:
     steps:
       # Step 1: Checkout the code
       - name: Checkout Code
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.1
 
 
       # Step 2: Set up Python (latest version)
