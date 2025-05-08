@@ -162,7 +162,11 @@ cython_debug/
 .idea/
 
 *.txt
-!runtime.txt
 *.sql
+*.key
+*.crt
+*.pem
+!runtime.txt
 certificate/
 .vscode/
+test/
