@@ -9,3 +9,6 @@ cryptography
 gunicorn
 netifaces
 validators
+pyOpenSSL
+Werkzeug
+django-extensions
