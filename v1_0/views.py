@@ -82,9 +82,11 @@ def make_report_view(request):
         if 400 <= result['status_code'] < 500:
             return JsonResponse({'message': result['message']}, status=result['status_code'])
         return JsonResponse({'message': 'Internal authentication error'}, status=500)
-    data['proof'] = result['results']['successs']
+    data['proof'] = []
+    proof_list = result['data']['success'] + result['data']['success_but']
+    data['proof'] = ' '.join(proof_list)
 
-    data['id'] = id_generator()
+    data['id'] = id_generator()['data']['id']
     data['date'] = generate_date()
     data['time'] = generate_time()
 
