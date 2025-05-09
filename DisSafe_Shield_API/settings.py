@@ -30,8 +30,11 @@ SECRET_KEY = getenv('SECRET_KEY')
 DEBUG = True
 
 IPS = get_ip_machine()
+DOMAINS = getenv('DOMAINS')
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(IPS)
+if DOMAINS:
+    ALLOWED_HOSTS.extend(DOMAINS)
 
 
 # Application definition
