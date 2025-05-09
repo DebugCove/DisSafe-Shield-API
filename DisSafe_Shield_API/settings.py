@@ -31,10 +31,10 @@ DEBUG = True
 
 IPS = get_ip_machine()
 DOMAINS = getenv('DOMAINS')
+print(DOMAINS)
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(IPS)
-if DOMAINS:
-    ALLOWED_HOSTS.extend(DOMAINS)
+ALLOWED_HOSTS.append(DOMAINS)
 
 
 # Application definition
