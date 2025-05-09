@@ -21,6 +21,7 @@ def get_route_info(route):
     query = 'SELECT * FROM Route_info WHERE route = %s'
 
     if route is None:
+        print('Route is not defined')
         return {
             'error': True,
             'message': 'Route is not defined',
@@ -31,11 +32,10 @@ def get_route_info(route):
         conn = connect_database()
         cursor = conn.cursor()
         cursor.execute(query, (route,))
-        column = [desc[0] for desc in cursor.description]
-
         result = cursor.fetchall()
 
         if result is None:
+            print('Route not found')
             return {
                 'error': True,
                 'message': 'Route not found',
@@ -48,6 +48,7 @@ def get_route_info(route):
             'data': result
         }
     except Exception as error:
+        print(f'Database error {str(error)}')
         return {
             'error': True,
             'message': f'Database error {str(error)}',
@@ -92,8 +93,6 @@ def get_token_info(auth):
         conn = connect_database()
         cursor = conn.cursor()
         cursor.execute(query, (token,))
-        column = [desc[0] for desc in cursor.description]
-
         result = cursor.fetchall()
 
         if result is None:
@@ -109,6 +108,7 @@ def get_token_info(auth):
             'data': result
         }
     except Exception as error:
+        print(f'Database error: {str(error)}')
         return {
             'error': True,
             'message': f'Database error: {str(error)}',
