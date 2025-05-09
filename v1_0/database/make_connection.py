@@ -18,6 +18,7 @@ def connect_database(attempt=3, delay=5):
     for i in range(attempt):
         print('Connecting to database...')
         try:
+            print('Connecting with success')
             conn = mysql.connector.connect(**database_config)
             return conn
         except mysql.connector.Error as err:
