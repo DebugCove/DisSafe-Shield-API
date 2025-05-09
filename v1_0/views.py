@@ -33,13 +33,6 @@ def status_view(request):
         response['Access-Control-Allow-Headers'] = 'Content-Type'
         return response
     elif request.method == 'GET':
-        token = request.headers.get('Authorization')
-        result = auth_verf(token, route='status ')
-        if result['error']:
-            if 400 <= result['status_code'] < 500:
-                return JsonResponse({'message': result['message']}, status=result['status_code'])
-            return JsonResponse({'message': 'Internal authentication error'}, status=500)
-
         return JsonResponse({'message': 'Status Ok'})
     else:
         return JsonResponse({'message': 'Method invalid'}, status=405)
