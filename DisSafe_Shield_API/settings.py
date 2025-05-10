@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
-from os import getenv, path
+from os import getenv
 from .extras.machine_ip import get_ip_machine
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +31,7 @@ DEBUG = True
 
 IPS = get_ip_machine()
 DOMAINS = getenv('DOMAINS')
-print(DOMAINS)
+
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(IPS)
 ALLOWED_HOSTS.append(DOMAINS)
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'rest_framework',
+    'corsheaders',
     'v1_0',
 ]
 
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'DisSafe_Shield_API.urls'
@@ -140,3 +143,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "https://api.disssafe.portughost.duckdns.org",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True  
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
