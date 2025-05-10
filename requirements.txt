@@ -1,5 +1,7 @@
 django
 djangorestframework
+django-extensions
+django-cors-headers
 requests
 mysql-connector-python
 python-dotenv 
@@ -11,4 +13,3 @@ netifaces
 validators
 pyOpenSSL
 Werkzeug
-django-extensions
