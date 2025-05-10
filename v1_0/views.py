@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 from .extras.auth_verification import auth_verf
 from .extras.entry_verification import entry_validation
 from .extras.info_generator import generate_date, generate_time
@@ -10,7 +10,7 @@ from .extras.make_report.id_generator import id_generator
 from .extras.make_report.send_database import send_database
 
 
-@csrf_exempt
+@never_cache
 def index_view(request):
     if request.method == 'OPTIONS':
         response = HttpResponse(status=204)
@@ -24,7 +24,7 @@ def index_view(request):
         return JsonResponse({'message': 'Method invalid'}, status=405)
 
 
-@csrf_exempt
+@never_cache
 def status_view(request):
     if request.method == 'OPTIONS':
         response = HttpResponse(status=204)
@@ -38,7 +38,7 @@ def status_view(request):
         return JsonResponse({'message': 'Method invalid'}, status=405)
 
 
-@csrf_exempt
+@never_cache
 def make_report_view(request):
     if request.method != 'POST':
         return JsonResponse({'message': 'Method invalid'}, status=405)
