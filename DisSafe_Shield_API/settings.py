@@ -144,11 +144,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = []
 CORS_DOMAINS = getenv('DOAMINS_CORS')
+CORS_ALLOWED_ORIGINS = []
 CORS_ALLOWED_ORIGINS.append(CORS_DOMAINS)
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'x-csrftoken',
+]
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
