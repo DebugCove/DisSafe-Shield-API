@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'csp.middleware.CSPMiddleware',
 ]
@@ -99,6 +100,7 @@ DATABASES = {
         'PASSWORD': password,
         'HOST': host,  
         'PORT': port,
+        'CONN_MAX_AGE': 60,
     }
 }
 
@@ -160,3 +162,13 @@ CSP_DEFAULT_SRC = ("'none'",)
 CSP_SCRIPT_SRC = ("'none'",)
 CSP_STYLE_SRC = ("'none'",)
 CSP_IMG_SRC = ("'none'",)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
