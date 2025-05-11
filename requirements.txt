@@ -3,6 +3,7 @@ djangorestframework
 django-extensions
 django-cors-headers
 django-csp
+django-redis
 requests
 mysql-connector-python
 python-dotenv 
