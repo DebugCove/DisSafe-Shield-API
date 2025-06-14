@@ -3,7 +3,10 @@
 ![](https://img.shields.io/github/v/release/DebugCove/DisSafe-Shield-API?include_prereleases)  
 ![](https://img.shields.io/github/last-commit/DebugCove/DisSafe-Shield-API)  
 ![](https://img.shields.io/github/stars/DebugCove/DisSafe-Shield-API)  
-![](https://img.shields.io/github/forks/DebugCove/DisSafe-Shield-API)  
+![](https://img.shields.io/github/forks/DebugCove/DisSafe-Shield-API)  <br><br>
+[![Dependency Vulnerabilities](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi-hooks.soos.io%2Fapi%2Fshieldsio-badges%3FbadgeType%3DDependencyVulnerabilities%26pid%3D0ej8g0xbl%26)](https://app.soos.io/research/repositories/github/DebugCove/DisSafe-Shield-API?attributionFormat=soosissues)<br>
+[![Out Of Date Dependencies](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi-hooks.soos.io%2Fapi%2Fshieldsio-badges%3FbadgeType%3DOutOfDateDependencies%26pid%3D0ej8g0xbl%26)](https://app.soos.io)
+<br>
 
 The DisSafe Shield API is an API designed for a shared moderation bot, allowing multiple servers and communities to use a unified system to maintain order and security. The API acts as an intermediary between the database, the main API, and the bot, ensuring efficient and secure communication.  
 
